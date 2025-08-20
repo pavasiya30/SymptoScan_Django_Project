@@ -1,0 +1,476 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9fafb;
+    }
+    
+    /* Hero Section */
+    /* =========================
+       HERO SECTION
+    ========================= */
+   /* =========================
+   HERO SECTION
+========================= */
+.hero-section {
+  background: linear-gradient(rgba(0, 105, 148, 0.85), rgba(0, 168, 120, 0.85)),
+              url('/static/images/hero-bg.jpg') center/cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 120px 20px;
+  border-radius: 0 0 40px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  opacity: 0.95;
+}
+
+.hero-section .btn {
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.hero-section .btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #9333ea);
+  border: none;
+}
+
+.hero-section .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #7e22ce);
+  transform: translateY(-3px);
+}
+
+.hero-section .btn-outline-light {
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.hero-section .btn-outline-light:hover {
+  background: #fff;
+  color: #0f172a;
+  transform: translateY(-3px);
+}
+
+
+
+
+/* =========================
+   GLOBAL STATS SECTION
+========================= */
+.stats-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-top: 5px solid transparent;
+}
+
+.stats-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  border-top: 5px solid #10b981; /* emerald green accent */
+}
+
+.stats-card i {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 15px;
+}
+
+.stats-card p {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.stats-card small {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+
+
+.disease-card {
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease-in-out;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .disease-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+
+  .icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px auto;
+    color: #fff;
+  }
+
+  .diabetes { background: linear-gradient(135deg, #007bff, #00c6ff); }
+  .heart { background: linear-gradient(135deg, #ff4b2b, #ff416c); }
+  .hypertension { background: linear-gradient(135deg, #ffb347, #ffcc33); }
+  .asthma { background: linear-gradient(135deg, #17a2b8, #00e1ff); }
+  .cancer { background: linear-gradient(135deg, #28a745, #6ddf6d); }
+  .stroke { background: linear-gradient(135deg, #6c757d, #adb5bd); }
+
+  .disease-card h5 {
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  .btn-custom {
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .btn-custom:hover {
+    transform: scale(1.05);
+  }
+  </style>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h1 class="display-3 fw-bold mb-4">SymptoScan</h1>
+          <p class="lead mb-4">Advanced AI-powered health prediction and monitoring system</p>
+          <p class="mb-4">Get instant health risk assessments using machine learning and stay informed about global health trends</p>
+          {% if user.is_authenticated %}
+            <a href="#diseases" class="btn btn-primary btn-lg me-3 shadow">Start Health Check</a>
+            <a href="{% url 'user_predictions' %}" class="btn btn-outline-light btn-lg shadow">View My Reports</a>
+          {% else %}
+            <a href="{% url 'signupaccount' %}" class="btn btn-primary btn-lg me-3 shadow">Get Started</a>
+            <a href="{% url 'loginaccount' %}" class="btn btn-outline-light btn-lg shadow">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Health Statistics -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row text-center mb-5">
+        <div class="col-12">
+          <h2 class="display-4 fw-bold mb-3">Global Health Statistics</h2>
+          <p class="lead">Real-time data on major health conditions worldwide</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="stats-card">
+            <i class="fas fa-syringe fa-2x mb-3"></i>
+            <p class="mb-0">People with Diabetes Globally</p>
+            <small>Prevalence: {{ diseases_stats.diabetes.prevalence }}</small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="stats-card">
+            <i class="fas fa-heartbeat fa-2x mb-3"></i>
+            <p class="mb-0">Heart Disease Cases</p>
+            <small>Prevalence: {{ diseases_stats.heart_disease.prevalence }}</small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="stats-card">
+            <i class="fas fa-tachometer-alt fa-2x mb-3"></i>
+            <p class="mb-0">Hypertension Cases</p>
+            <small>Prevalence: {{ diseases_stats.hypertension.prevalence }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disease Prediction Services -->
+  <section id="diseases" class="py-5">
+    <div class="container">
+      <div class="row text-center mb-5">
+        <div class="col-12">
+          <h2 class="display-4 fw-bold mb-3">Health Risk Assessment</h2>
+          <p class="lead">AI-powered predictions for major health conditions</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Diabetes -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-heartbeat fa-3x text-primary mb-3"></i>
+                <h5 class="card-title fw-bold">Diabetes Risk</h5>
+              </div>
+              <p class="card-text">Assess your diabetes risk based on glucose levels, BMI, family history, and other factors.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Blood glucose analysis</li>
+                <li>• BMI calculation</li>
+                <li>• Family history assessment</li>
+                <li>• Lifestyle factors</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'diabetes' %}" class="btn btn-primary">Start Assessment</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heart Disease -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                <h5 class="card-title fw-bold">Heart Disease Risk</h5>
+              </div>
+              <p class="card-text">Evaluate cardiovascular health risks using chest pain patterns, blood pressure, and cholesterol levels.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Chest pain analysis</li>
+                <li>• Blood pressure monitoring</li>
+                <li>• Cholesterol assessment</li>
+                <li>• Heart rate evaluation</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'heart_disease' %}" class="btn btn-primary">Start Assessment</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hypertension -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-tachometer-alt fa-3x text-warning mb-3"></i>
+                <h5 class="card-title fw-bold">Hypertension Risk</h5>
+              </div>
+              <p class="card-text">Monitor blood pressure risks and assess hypertension probability based on lifestyle factors.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Blood pressure analysis</li>
+                <li>• Lifestyle assessment</li>
+                <li>• Age and BMI factors</li>
+                <li>• Risk factor evaluation</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'hypertension' %}" class="btn btn-primary">Start Assessment</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Asthma -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-lungs fa-3x text-info mb-3"></i>
+                <h5 class="card-title fw-bold">Asthma Information</h5>
+              </div>
+              <p class="card-text">Learn about asthma symptoms, triggers, and management strategies for better respiratory health.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Symptom identification</li>
+                <li>• Trigger assessment</li>
+                <li>• Management tips</li>
+                <li>• Prevention strategies</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'asthma' %}" class="btn btn-primary">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cancer -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-ribbon fa-3x text-success mb-3"></i>
+                <h5 class="card-title fw-bold">Cancer Awareness</h5>
+              </div>
+              <p class="card-text">Access comprehensive information about cancer prevention, early detection, and risk factors.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Risk factor analysis</li>
+                <li>• Prevention guidelines</li>
+                <li>• Early detection signs</li>
+                <li>• Screening recommendations</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'cancer' %}" class="btn btn-primary">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stroke -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card disease-card h-100">
+            <div class="card-body p-4">
+              <div class="text-center mb-3">
+                <i class="fas fa-brain fa-3x text-secondary mb-3"></i>
+                <h5 class="card-title fw-bold">Stroke Prevention</h5>
+              </div>
+              <p class="card-text">Understand stroke risk factors, warning signs, and prevention strategies for brain health.</p>
+              <ul class="list-unstyled small text-muted mb-3">
+                <li>• Warning sign recognition</li>
+                <li>• Risk factor assessment</li>
+                <li>• Prevention strategies</li>
+                <li>• Emergency response</li>
+              </ul>
+              <div class="text-center">
+                <a href="{% url 'disease_detail' 'stroke' %}" class="btn btn-primary">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Reviews -->
+  {% if recent_reviews %}
+    <section class="py-5 bg-light">
+      <div class="container">
+        <div class="row text-center mb-5">
+          <div class="col-12">
+            <h2 class="display-4 fw-bold mb-3">User Reviews</h2>
+            <p class="lead">What our users say about their experience</p>
+          </div>
+        </div>
+
+        <div class="row">
+          {% for review in recent_reviews %}
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card review-card h-100 p-3">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-3">
+                    <div class="me-3">
+                      <i class="fas fa-user-circle fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                      <h6 class="mb-0">{{ review.user.username }}</h6>
+                      <small class="text-muted">{{ review.disease.name }}</small>
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    {% for i in star_range %}
+                      {% if forloop.counter <= review.rating %}
+                        <i class="fas fa-star text-warning"></i>
+                      {% else %}
+                        <i class="far fa-star text-warning"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <p class="card-text">{{ review.comment|truncatewords:20 }}</p>
+                  <small class="text-muted">{{ review.created_at|date:'M d, Y' }}</small>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Call to Action -->
+  <section class="cta-section my-5">
+    <div class="container text-center">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="display-4 fw-bold mb-3">Take Control of Your Health</h2>
+          <p class="lead mb-4">Join thousands of users who trust SymptoScan for their health monitoring needs</p>
+          {% if not user.is_authenticated %}
+            <a href="{% url 'signupaccount' %}" class="btn btn-light btn-lg me-3 shadow">Sign Up Now</a>
+            <a href="{% url 'loginaccount' %}" class="btn btn-outline-light btn-lg shadow">Login</a>
+          {% else %}
+            <a href="#diseases" class="btn btn-light btn-lg shadow">Start Your Assessment</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold mb-3">SymptoScan</h5>
+          <p>Advanced AI-powered health prediction system helping you stay informed about your health risks.</p>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold mb-3">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="#" class="text-white-50">About Us</a>
+            </li>
+            <li>
+              <a href="#" class="text-white-50">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="#" class="text-white-50">Terms of Service</a>
+            </li>
+            <li>
+              <a href="#" class="text-white-50">Contact</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold mb-3">Health Services</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="{% url 'disease_detail' 'diabetes' %}" class="text-white-50">Diabetes Assessment</a>
+            </li>
+            <li>
+              <a href="{% url 'disease_detail' 'heart_disease' %}" class="text-white-50">Heart Health</a>
+            </li>
+            <li>
+              <a href="{% url 'disease_detail' 'hypertension' %}" class="text-white-50">Blood Pressure</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+{% endblock %}

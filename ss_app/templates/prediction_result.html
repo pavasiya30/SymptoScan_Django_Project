@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .result-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+    }
+    
+    .risk-card {
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .risk-low {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+    
+    .risk-medium {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        color: white;
+    }
+    
+    .risk-high {
+        background: linear-gradient(135deg, #dc3545, #e83e8c);
+        color: white;
+    }
+    
+    .confidence-bar {
+        height: 20px;
+        border-radius: 10px;
+        background: #e9ecef;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        transition: width 0.5s ease;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin: 2rem 0;
+    }
+</style>
+
+<!-- Result Hero -->
+<section class="result-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Your {{ prediction.disease.name }} Risk Assessment</h1>
+        <p class="lead">Based on your symptoms and health data</p>
+    </div>
+</section>
+
+<!-- Risk Level Display -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="risk-card risk-{{ prediction.risk_level }}">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="fw-bold mb-3">
+                                {% if prediction.risk_level == 'low' %}
+                                    <i class="fas fa-check-circle me-2"></i>Low Risk
+                                {% elif prediction.risk_level == 'medium' %}
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Medium Risk
+                                {% else %}
+                                    <i class="fas fa-exclamation-circle me-2"></i>High Risk
+                                {% endif %}
+                            </h2>
+                            <p class="lead mb-3">
+                                {% if prediction.risk_level == 'low' %}
+                                    Your risk level is low. Continue maintaining healthy habits!
+                                {% elif prediction.risk_level == 'medium' %}
+                                    Your risk level is moderate. Consider lifestyle changes and consult a healthcare provider.
+                                {% else %}
+                                    Your risk level is high. Please consult with a healthcare professional immediately.
+                                {% endif %}
+                            </p>
+                            
+                            <div class="confidence-section">
+                                <h5 class="mb-2">Confidence Level: {{ prediction.confidence_score|floatformat:1 }}%</h5>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: {{ prediction.confidence_score }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="display-1 fw-bold">
+                                {% if prediction.risk_level == 'low' %}
+                                    <i class="fas fa-smile"></i>
+                                {% elif prediction.risk_level == 'medium' %}
+                                    <i class="fas fa-meh"></i>
+                                {% else %}
+                                    <i class="fas fa-frown"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Risk Level Chart -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="chart-container">
+                    <h4 class="fw-bold mb-4 text-center">Risk Level Visualization</h4>
+                    
+                    <!-- Risk Level Bar Chart -->
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h6 class="fw-bold text-success">Low Risk</h6>
+                                <div class="progress mb-2" style="height: 30px;">
+                                    <div class="progress-bar bg-success" 
+                                         style="width: {% if prediction.risk_level == 'low' %}100{% else %}20{% endif %}%">
+                                        {% if prediction.risk_level == 'low' %}{{ prediction.confidence_score|floatformat:0 }}%{% endif %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">0-33% Risk Range</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h6 class="fw-bold text-warning">Medium Risk</h6>
+                                <div class="progress mb-2" style="height: 30px;">
+                                    <div class="progress-bar bg-warning" 
+                                         style="width: {% if prediction.risk_level == 'medium' %}100{% else %}20{% endif %}%">
+                                        {% if prediction.risk_level == 'medium' %}{{ prediction.confidence_score|floatformat:0 }}%{% endif %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">34-66% Risk Range</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <h6 class="fw-bold text-danger">High Risk</h6>
+                                <div class="progress mb-2" style="height: 30px;">
+                                    <div class="progress-bar bg-danger" 
+                                         style="width: {% if prediction.risk_level == 'high' %}100{% else %}20{% endif %}%">
+                                        {% if prediction.risk_level == 'high' %}{{ prediction.confidence_score|floatformat:0 }}%{% endif %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">67-100% Risk Range</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Risk Factors -->
+                    <div class="mt-4">
+                        <h5 class="fw-bold mb-3">Your Input Data:</h5>
+                        <div class="row">
+                            {% for key, value in prediction.symptoms_data.items %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex justify-content-between">
+                                       <span class="fw-bold">{{ key|title|cut:"_" }}:</span>
+                                        <span>
+                                            {% if value == True %}
+                                                Yes
+                                            {% elif value == False %}
+                                                No
+                                            {% else %}
+                                                {{ value }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recommendations -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>Recommendations
+                        </h5>
+                        <ul class="list-unstyled">
+                            {% if prediction.risk_level == 'low' %}
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-check text-success me-2 mt-1"></i>
+                                    <span>Continue regular exercise and healthy eating</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-check text-success me-2 mt-1"></i>
+                                    <span>Schedule regular health checkups</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-check text-success me-2 mt-1"></i>
+                                    <span>Maintain current lifestyle habits</span>
+                                </li>
+                            {% elif prediction.risk_level == 'medium' %}
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation text-warning me-2 mt-1"></i>
+                                    <span>Consult with a healthcare provider</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation text-warning me-2 mt-1"></i>
+                                    <span>Consider lifestyle modifications</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation text-warning me-2 mt-1"></i>
+                                    <span>Monitor symptoms regularly</span>
+                                </li>
+                            {% else %}
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation-triangle text-danger me-2 mt-1"></i>
+                                    <span>Seek immediate medical attention</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation-triangle text-danger me-2 mt-1"></i>
+                                    <span>Follow up with specialist</span>
+                                </li>
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation-triangle text-danger me-2 mt-1"></i>
+                                    <span>Consider immediate lifestyle changes</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 border-0 shadow">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-info-circle text-info me-2"></i>Important Note
+                        </h5>
+                        <div class="alert alert-info">
+                            <p class="mb-2"><strong>Disclaimer:</strong> This assessment is for informational purposes only and should not replace professional medical advice.</p>
+                            <p class="mb-0">Always consult with qualified healthcare professionals for proper diagnosis and treatment.</p>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h6 class="fw-bold">Next Steps:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">📋 Save this report for your records</li>
+                                <li class="mb-2">👨‍⚕️ Share with your healthcare provider</li>
+                                <li class="mb-2">📊 Track your health over time</li>
+                                <li class="mb-2">💬 Leave a review about your experience</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Action Buttons -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h4 class="fw-bold mb-4">What would you like to do next?</h4>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'add_review' prediction.id %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-star me-2"></i>Leave a Review
+                    </a>
+                    <a href="{% url 'user_predictions' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-history me-2"></i>View All Reports
+                    </a>
+                    <a href="{% url 'disease_detail' disease_name %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Back to {{ prediction.disease.name }}
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+                        <i class="fas fa-home me-2"></i>Explore Other Tests
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Animate confidence bar on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const confidenceFill = document.querySelector('.confidence-fill');
+    if (confidenceFill) {
+        setTimeout(() => {
+            confidenceFill.style.width = '{{ prediction.confidence_score }}%';
+        }, 500);
+    }
+});
+</script>
+{% endblock %}

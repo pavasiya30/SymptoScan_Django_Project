@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Risk Check</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Check Risk</button>
+  </form>
+
+  {% if prediction %}
+    <h2>Result</h2>
+    <p>Risk Level: {{ prediction.risk_level }}</p>
+    <p>Confidence: {{ prediction.confidence_score }}%</p>
+  {% endif %}
+{% endblock %}
