@@ -49,6 +49,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "ss_app.middleware.AdminRedirectMiddleware",
 ]
 
 ROOT_URLCONF = "SymptoScan.urls"
@@ -56,7 +57,10 @@ ROOT_URLCONF = "SymptoScan.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR,'SymptoScan/templates')],
+        "DIRS": [
+            os.path.join(BASE_DIR,'SymptoScan/templates'),
+            os.path.join(BASE_DIR,'ss_app/templates'),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

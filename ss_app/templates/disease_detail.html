@@ -2,49 +2,257 @@
 {% load static %}
 {% block content %}
 <style>
-    .disease-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 4rem 0;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    html, body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
     }
 
-    .stats-box {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        margin-top: -3rem;
+    /* Professional Medical Hero Section - Matching Home Page */
+    .disease-hero {
+        background: linear-gradient(135deg, 
+            #1e40af 0%, 
+            #3b82f6 50%, 
+            #60a5fa 100%);
+        color: #fff;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(30, 64, 175, 0.15);
+    }
+
+    /* Subtle medical background pattern */
+    .disease-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="medical" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23medical)"/></svg>');
+        opacity: 0.3;
+        z-index: 1;
+    }
+
+    .disease-hero .container {
         position: relative;
         z-index: 2;
     }
 
+    .disease-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        letter-spacing: -0.5px;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .disease-hero p {
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+        opacity: 0.9;
+        font-weight: 400;
+        line-height: 1.6;
+        color: #e2e8f0;
+    }
+
+    /* Professional Stats Box - Matching Home Page Cards */
+    .stats-box {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        margin-top: -3rem;
+        position: relative;
+        z-index: 2;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .stats-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    .stats-box h3 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        color: #334155;
+    }
+
+    .stats-box p {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 400;
+    }
+
+    /* Professional Prediction Form - Matching Home Page Style */
     .prediction-form {
-        background: #f8f9fa;
-        border-radius: 15px;
+        background: #ffffff;
+        border-radius: 12px;
         padding: 2rem;
         margin: 2rem 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
     }
 
-    .symptom-list {
-        background: white;
-        border-left: 4px solid #007bff;
-        padding: 1.5rem;
-        border-radius: 0 10px 10px 0;
+    .prediction-form:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
     }
 
-    .prevention-list {
-        background: white;
-        border-left: 4px solid #28a745;
-        padding: 1.5rem;
-        border-radius: 0 10px 10px 0;
+    /* Professional Info Box - Matching Home Page Cards */
+    .info-box {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
     }
 
+    .info-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    .info-item h4 {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        font-size: 1.2rem;
+        color: #334155;
+    }
+
+    .symptoms-content, .prevention-content {
+        color: #64748b;
+        line-height: 1.5;
+        font-size: 0.9rem;
+    }
+
+    .symptoms-content .d-flex, .prevention-content .d-flex {
+        margin-bottom: 0.4rem;
+        font-size: 0.85rem;
+    }
+
+    /* Professional Review Cards - Matching Home Page */
     .review-card {
+        background: #ffffff;
         border: none;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    /* Professional Section Styling - Matching Home Page */
+    .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.75rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: #3b82f6;
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+    }
+
+    /* Professional CTA Section - Matching Home Page */
+    .cta-section {
+        background: #1e40af;
+        color: white;
+        padding: 60px 0;
+        margin: 40px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="medical" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23medical)"/></svg>');
+        opacity: 0.2;
+    }
+
+    .cta-section .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-section h3 {
+        color: #ffffff;
+    }
+
+    .cta-section p {
+        color: #e2e8f0;
+    }
+
+    /* Professional Buttons - Matching Home Page */
+    .btn-custom {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background: #3b82f6;
+        border: none;
+        color: white;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        background: #2563eb;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .disease-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .stats-box {
+            padding: 1.5rem;
+        }
     }
 </style>
 
@@ -58,28 +266,6 @@
             </div>
             <div class="col-lg-4 text-center">
                 <i class="fas fa-heartbeat fa-5x opacity-50"></i>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Global Statistics -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="stats-box">
-            <div class="row text-center">
-                <div class="col-md-4 mb-3">
-                    <h3 class="text-primary fw-bold">{{ stats.global_cases|floatformat:0 }}</h3>
-                    <p class="mb-0">Global Cases</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <h3 class="text-danger fw-bold">{{ stats.deaths_per_year|floatformat:0 }}</h3>
-                    <p class="mb-0">Deaths Per Year</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <h3 class="text-success fw-bold">{{ stats.prevalence }}</h3>
-                    <p class="mb-0">Global Prevalence</p>
-                </div>
             </div>
         </div>
     </div>
@@ -190,12 +376,19 @@
 </section>
 {% endif %}
 
+
+
 <!-- User Reviews -->
 <section class="py-5">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h3 class="fw-bold mb-4">User Reviews & Experiences</h3>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">User Reviews & Experiences</h3>
+                    <a href="{% url 'wordcloud' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-cloud me-2"></i>View Word Cloud
+                    </a>
+                </div>
 
                 {% if reviews %}
                 <div class="row">
@@ -249,14 +442,18 @@
 </section>
 
 <!-- Call to Action -->
-<section class="py-5 bg-primary text-white">
+<section class="cta-section my-5">
     <div class="container text-center">
-        <h3 class="fw-bold mb-3">Need More Information?</h3>
-        <p class="lead mb-4">Consult with healthcare professionals for personalized advice</p>
-        <a href="{% url 'home' %}" class="btn btn-light btn-lg me-3">Explore Other Conditions</a>
-        {% if user.is_authenticated %}
-        <a href="{% url 'user_predictions' %}" class="btn btn-outline-light btn-lg">View My Reports</a>
-        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-3" style="color: #ffffff;">Need More Information?</h3>
+                <p class="lead mb-4" style="color: #e2e8f0;">Consult with healthcare professionals for personalized advice</p>
+                <a href="{% url 'home' %}" class="btn btn-light btn-lg me-3 shadow">Explore Other Conditions</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'user_predictions' %}" class="btn btn-outline-light btn-lg shadow">View My Reports</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}

@@ -47,6 +47,13 @@ class DiseaseAPIClient:
                 'prevalence': '1.3%',
                 'new_cases_daily': 1800,
                 'countries_affected': 195
+            },
+            'kidney_disease': {
+                'global_cases': 850000000,
+                'deaths_per_year': 1200000,
+                'prevalence': '10.4%',
+                'new_cases_daily': 2500,
+                'countries_affected': 195
             }
         }
     

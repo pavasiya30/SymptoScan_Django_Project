@@ -1,0 +1,634 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Disease Management - SymptoScan Admin{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<style>
+    /* Ensure consistent sidebar styling across all admin pages */
+    .admin-sidebar h4 {
+        color: #ffffff !important;
+        font-weight: normal !important;
+    }
+    
+    .admin-sidebar h4 i {
+        color: #ffffff !important;
+    }
+    
+    .admin-sidebar small {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    .admin-sidebar hr {
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    /* Minimal Dashboard Styling with Light Colors */
+    .stats-card {
+        background: #ffffff;
+        border: 1px solid #e3f2fd;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.12);
+        border-color: #bbdefb;
+    }
+    
+    .stats-icon {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
+        border-radius: 12px !important;
+        width: 65px !important;
+        height: 65px !important;
+        font-size: 1.5rem !important;
+        color: #1976d2 !important;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+    }
+    
+    .stats-users .stats-icon { 
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important; 
+        color: #1976d2 !important;
+    }
+    .stats-predictions .stats-icon { 
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; 
+        color: #7b1fa2 !important;
+    }
+    .stats-diseases .stats-icon { 
+        background: linear-gradient(135deg, #e8f5e8, #c8e6c9) !important; 
+        color: #388e3c !important;
+    }
+    .stats-reviews .stats-icon { 
+        background: linear-gradient(135deg, #fff3e0, #ffcc02) !important; 
+        color: #f57c00 !important;
+    }
+    .stats-chat .stats-icon { 
+        background: linear-gradient(135deg, #e0f2f1, #b2dfdb) !important; 
+        color: #00796b !important;
+    }
+    .stats-conversations .stats-icon { 
+        background: linear-gradient(135deg, #fce4ec, #f8bbd9) !important; 
+        color: #c2185b !important;
+    }
+    
+    .admin-form {
+        background: #ffffff;
+        border: 1px solid #e3f2fd;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .admin-form:hover {
+        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.12);
+        border-color: #bbdefb;
+    }
+    
+    .admin-form h5 {
+        color: #1976d2;
+        font-weight: 600;
+    }
+    
+    .admin-form h5 i {
+        color: #42a5f5;
+    }
+    
+    .btn-admin {
+        border: 1px solid #e3f2fd;
+        border-radius: 8px;
+        font-weight: 500;
+        text-transform: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-admin:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+    }
+    
+    .btn-admin.btn-primary {
+        background: linear-gradient(135deg, #42a5f5, #1976d2);
+        border-color: #1976d2;
+        color: white;
+    }
+    
+    .btn-admin.btn-success {
+        background: linear-gradient(135deg, #66bb6a, #388e3c);
+        border-color: #388e3c;
+        color: white;
+    }
+    
+    .btn-admin.btn-warning {
+        background: linear-gradient(135deg, #ffb74d, #f57c00);
+        border-color: #f57c00;
+        color: white;
+    }
+    
+    .btn-admin.btn-info {
+        background: linear-gradient(135deg, #4dd0e1, #0097a7);
+        border-color: #0097a7;
+        color: white;
+    }
+    
+    .text-primary {
+        color: #1976d2 !important;
+    }
+    
+    .text-warning {
+        color: #f57c00 !important;
+    }
+    
+    .text-success {
+        color: #388e3c !important;
+    }
+    
+    .border-bottom {
+        border-bottom: 1px solid #e3f2fd !important;
+    }
+    
+    .text-muted {
+        color: #64b5f6 !important;
+    }
+    
+    .badge.bg-success {
+        background: linear-gradient(135deg, #66bb6a, #388e3c) !important;
+    }
+    
+    .badge.bg-warning {
+        background: linear-gradient(135deg, #ffb74d, #f57c00) !important;
+        color: white !important;
+    }
+    
+    .badge.bg-danger {
+        background: linear-gradient(135deg, #ef5350, #d32f2f) !important;
+    }
+  
+    /* Chart container styling */
+    canvas {
+        border-radius: 12px;
+        background: #fafbfc;
+        padding: 1rem;
+    }
+    
+    /* Equal height for recent activity boxes */
+    .recent-activity-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .recent-activity-col {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .recent-activity-col .admin-form {
+        height: auto;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .recent-activity-col .admin-form .content-area {
+        flex: 1;
+        overflow: visible;
+        height: auto;
+    }
+    
+    /* Ensure consistent spacing */
+    .recent-item {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e3f2fd;
+        transition: background-color 0.2s ease;
+    }
+    
+    .recent-item:hover {
+        background-color: #f8fbff;
+    }
+    
+    .recent-item:last-child {
+        border-bottom: none;
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        background: linear-gradient(135deg, #f8fbff, #e3f2fd);
+        border-radius: 12px;
+        margin: 0;
+    }
+</style>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-users me-3">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ total_users|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-predictions me-3">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ total_predictions|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total Predictions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-diseases me-3">
+                    <i class="fas fa-disease"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ total_diseases|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total Diseases</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-reviews me-3">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ total_reviews|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total Reviews</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Chat Statistics Row -->
+<div class="row mb-4">
+    <div class="col-lg-6 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-chat me-3">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ total_chat_logs|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total AI Chat Messages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon stats-conversations me-3">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">{{ unique_conversations|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Unique Conversations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-3">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-chart-bar me-2"></i>
+                Predictions by Disease
+            </h5>
+            {% if predictions_by_disease %}
+                <canvas id="predictionsChart" height="100"></canvas>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                    <h6 class="text-muted">No prediction data available</h6>
+                    <p class="text-muted">Predictions will appear here once users start making assessments</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-3">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-chart-pie me-2"></i>
+                Reviews by Rating
+            </h5>
+            {% if reviews_by_rating %}
+                <canvas id="reviewsChart" height="100"></canvas>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                    <h6 class="text-muted">No review data available</h6>
+                    <p class="text-muted">Reviews will appear here once users start rating</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row recent-activity-row">
+    <div class="col-lg-3 col-md-6 mb-3 recent-activity-col">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-clock me-2"></i>
+                Recent Predictions
+            </h5>
+            <div class="content-area">
+                {% if recent_predictions %}
+                    {% for prediction in recent_predictions %}
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ prediction.user.username }}</h6>
+                                    <p class="text-muted mb-1">{{ prediction.disease.name }}</p>
+                                    <small class="text-muted">{{ prediction.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge 
+                                        {% if prediction.risk_level == 'low' %}bg-success
+                                        {% elif prediction.risk_level == 'medium' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ prediction.risk_level|title }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No recent predictions</h6>
+                        <p class="text-muted">Predictions will appear here</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3 recent-activity-col">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-star me-2"></i>
+                Recent Reviews
+            </h5>
+            <div class="content-area">
+                {% if recent_reviews %}
+                    {% for review in recent_reviews %}
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-user-circle fa-2x text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ review.user.username }}</h6>
+                                    <p class="text-muted mb-1">{{ review.disease.name }}</p>
+                                    <div class="mb-1">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <small class="text-muted">{{ review.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No recent reviews</h6>
+                        <p class="text-muted">Reviews will appear here</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3 recent-activity-col">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-user-plus me-2"></i>
+                Recent Users
+            </h5>
+            <div class="content-area">
+                {% if recent_users %}
+                    {% for user in recent_users %}
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-user-circle fa-2x text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ user.username }}</h6>
+                                    <p class="text-muted mb-1">{{ user.email }}</p>
+                                    <small class="text-muted">{{ user.date_joined|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-user-plus fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No recent users</h6>
+                        <p class="text-muted">New users will appear here</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3 recent-activity-col">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-comments me-2"></i>
+                Recent AI Chat Activity
+            </h5>
+            <div class="content-area">
+                {% if recent_chat_logs %}
+                    {% for chat_log in recent_chat_logs %}
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    {% if chat_log.is_user_message %}
+                                        <i class="fas fa-user fa-2x text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-robot fa-2x text-success"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ chat_log.user.username }}</h6>
+                                    <p class="text-muted mb-1">
+                                        {% if chat_log.disease %}
+                                            {{ chat_log.disease.name }}
+                                        {% else %}
+                                            General Chat
+                                        {% endif %}
+                                    </p>
+                                    <small class="text-muted">{{ chat_log.timestamp|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No recent chat activity</h6>
+                        <p class="text-muted">AI chat logs will appear here</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="admin-form">
+            <h5 class="mb-3">
+                <i class="fas fa-bolt me-2"></i>
+                Quick Actions
+            </h5>
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'admin_users' %}" class="btn btn-admin btn-primary w-100">
+                        <i class="fas fa-users me-2"></i>
+                        Manage Users
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'admin_diseases' %}" class="btn btn-admin btn-success w-100">
+                        <i class="fas fa-disease me-2"></i>
+                        Manage Diseases
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'admin_reviews' %}" class="btn btn-admin btn-warning w-100">
+                        <i class="fas fa-star me-2"></i>
+                        Moderate Reviews
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'admin_chat_logs' %}" class="btn btn-admin btn-info w-100">
+                        <i class="fas fa-comments me-2"></i>
+                        View Chat Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Predictions by Disease Chart
+{% if predictions_by_disease %}
+const predictionsCtx = document.getElementById('predictionsChart').getContext('2d');
+const predictionsChart = new Chart(predictionsCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for item in predictions_by_disease %}'{{ item.disease__name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Predictions',
+            data: [{% for item in predictions_by_disease %}{{ item.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: [
+                '#42a5f5',
+                '#66bb6a',
+                '#ffb74d',
+                '#ab47bc',
+                '#26a69a'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                },
+                x: {
+                    ticks: { maxRotation: 45, minRotation: 45 } // prevents label overlapping
+                }
+            }
+        }
+    }
+});
+{% endif %}
+
+// Reviews by Rating Chart
+{% if reviews_by_rating %}
+const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
+const reviewsChart = new Chart(reviewsCtx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for item in reviews_by_rating %}'{{ item.rating }} Stars'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in reviews_by_rating %}{{ item.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: [
+                '#42a5f5',
+                '#66bb6a',
+                '#ffb74d',
+                '#ab47bc',
+                '#26a69a'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+{% endif %}
+</script>
+{% endblock %}

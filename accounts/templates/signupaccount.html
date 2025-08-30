@@ -44,6 +44,13 @@
                                 <div class="text-danger small">{{ form.email.errors }}</div>
                             {% endif %}
                         </div>
+                         <div class="mb-3">
+                            <label for="{{ form.age.id_for_label }}" class="form-label">age</label>
+                            {{ form.age }}
+                            {% if form.age.errors %}
+                                <div class="text-danger small">{{ form.age.errors }}</div>
+                            {% endif %}
+                        </div>
                         
                         <div class="mb-3">
                             <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
@@ -53,6 +60,7 @@
                             {% endif %}
                         </div>
                         
+                       
                         <div class="mb-4">
                             <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
                             {{ form.password2 }}

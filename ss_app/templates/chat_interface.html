@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .chat-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .chat-messages {
+        height: 500px;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+    }
+    
+    .message {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .message.user {
+        justify-content: flex-end;
+    }
+    
+    .message.ai {
+        justify-content: flex-start;
+    }
+    
+    .message-content {
+        max-width: 70%;
+        padding: 15px 20px;
+        border-radius: 20px;
+        position: relative;
+        word-wrap: break-word;
+    }
+    
+    .message.user .message-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+    
+    .message.ai .message-content {
+        background: white;
+        color: #333;
+        border: 1px solid #e9ecef;
+        border-bottom-left-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .message.ai .message-content.warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        border-left: 4px solid #ffc107;
+    }
+    
+    .message.ai .message-content.warning strong {
+        color: #856404;
+    }
+    
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+        font-size: 18px;
+    }
+    
+    .message.user .message-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .message.ai .message-avatar {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    
+    .chat-input {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .chat-input form {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .chat-input input {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+    
+    .chat-input input:focus {
+        border-color: #667eea;
+    }
+    
+    .chat-input button {
+        padding: 15px 25px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    
+    .chat-input button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .chat-input button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .typing-indicator {
+        display: none;
+        padding: 15px 20px;
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #e9ecef;
+        margin-bottom: 20px;
+        border-bottom-left-radius: 5px;
+    }
+    
+    .typing-dots {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        background: #667eea;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+    
+    .prediction-info {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+    
+    .disclaimer {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #856404;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <h4 class="mb-0">
+                <i class="fas fa-robot me-2"></i>
+                AI Health Assistant
+            </h4>
+            <small>Context: {{ prediction.disease.name }} - {{ prediction.risk_level|title }} Risk</small>
+        </div>
+        
+        <!-- Prediction Info -->
+        <div class="prediction-info">
+            <h6 class="mb-2">
+                <i class="fas fa-chart-line me-2"></i>
+                Your Risk Assessment
+            </h6>
+            <p class="mb-1">
+                <strong>Disease:</strong> {{ prediction.disease.name }}<br>
+                <strong>Risk Level:</strong> 
+                <span class="badge 
+                    {% if prediction.risk_level == 'low' %}bg-success
+                    {% elif prediction.risk_level == 'medium' %}bg-warning
+                    {% else %}bg-danger{% endif %}">
+                    {{ prediction.risk_level|title }}
+                </span><br>
+                <strong>Confidence:</strong> {{ prediction.confidence_score|floatformat:1 }}%
+            </p>
+        </div>
+        
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Important:</strong> This AI assistant provides general health information and support. 
+            It is not a substitute for professional medical advice, diagnosis, or treatment. 
+            Always consult with qualified healthcare professionals for medical concerns.
+        </div>
+        
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            {% for message in chat_history %}
+                <div class="message {% if message.is_user_message %}user{% else %}ai{% endif %}">
+                    {% if not message.is_user_message %}
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                    {% endif %}
+                    <div class="message-content {% if not message.is_user_message and '⚠️' in message.response %}warning{% endif %}">
+                        {% if message.is_user_message %}
+                            {{ message.message }}
+                        {% else %}
+                            {{ message.response|linebreaks }}
+                        {% endif %}
+                    </div>
+                    {% if message.is_user_message %}
+                        <div class="message-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <small class="text-muted">AI is typing...</small>
+            </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <form id="chatForm">
+                <input type="text" id="messageInput" placeholder="Type your message here..." autocomplete="off">
+                <button type="submit" id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="text-center mt-4">
+        <a href="{% url 'user_predictions' %}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-arrow-left me-2"></i>Back to Predictions
+        </a>
+        <a href="{% url 'chat_history' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-history me-2"></i>Chat History
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    
+    // Scroll to bottom of chat
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Add message to chat
+    function addMessage(content, isUser = false, isWarning = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+        avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        if (isWarning) {
+            contentDiv.classList.add('warning');
+        }
+        contentDiv.innerHTML = isUser ? content : content.replace(/\n/g, '<br>');
+        
+        if (isUser) {
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(avatarDiv);
+        } else {
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+    }
+    
+    // Show/hide typing indicator
+    function showTyping() {
+        typingIndicator.style.display = 'block';
+        scrollToBottom();
+    }
+    
+    function hideTyping() {
+        typingIndicator.style.display = 'none';
+    }
+    
+    // Handle form submission
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Add user message to chat
+        addMessage(message, true);
+        messageInput.value = '';
+        sendButton.disabled = true;
+        
+        // Show typing indicator
+        showTyping();
+        
+        try {
+            const response = await fetch('{% url "send_message" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    prediction_id: {{ prediction.id }},
+                    conversation_id: '{{ conversation_id }}'
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                hideTyping();
+                // Check if response is a warning message
+                const isWarning = !data.is_health_related || data.response.includes('⚠️') || data.response.includes('Health Focus Reminder');
+                addMessage(data.response, false, isWarning);
+            } else {
+                hideTyping();
+                addMessage('Sorry, I encountered an error. Please try again.', false);
+            }
+        } catch (error) {
+            hideTyping();
+            addMessage('Sorry, I encountered an error. Please try again.', false);
+            console.error('Error:', error);
+        }
+        
+        sendButton.disabled = false;
+        messageInput.focus();
+    });
+    
+    // Auto-resize input
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+    
+    // Initial scroll to bottom
+    scrollToBottom();
+    
+    // Focus on input
+    messageInput.focus();
+});
+</script>
+{% endblock %}

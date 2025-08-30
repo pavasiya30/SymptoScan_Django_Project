@@ -3,55 +3,222 @@
 
 {% block content %}
 <style>
-    .result-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 3rem 0;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
+    html, body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
+    }
+
+    /* Professional Medical Hero Section - Matching Home Page */
+    .result-hero {
+        background: linear-gradient(135deg, 
+            #1e40af 0%, 
+            #3b82f6 50%, 
+            #60a5fa 100%);
+        color: #fff;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(30, 64, 175, 0.15);
+    }
+
+    /* Subtle medical background pattern */
+    .result-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="medical" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23medical)"/></svg>');
+        opacity: 0.3;
+        z-index: 1;
+    }
+
+    .result-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .result-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        letter-spacing: -0.5px;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-hero p {
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+        opacity: 0.9;
+        font-weight: 400;
+        line-height: 1.6;
+        color: #e2e8f0;
+    }
+
+    /* Professional Risk Card - Matching Home Page Cards */
     .risk-card {
-        border-radius: 15px;
+        background: #ffffff;
+        border-radius: 12px;
         padding: 2rem;
         text-align: center;
         margin: 2rem 0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
     }
-    
+
+    .risk-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
     .risk-low {
-        background: linear-gradient(135deg, #28a745, #20c997);
+        background: linear-gradient(135deg, #10b981, #059669);
         color: white;
     }
-    
+
     .risk-medium {
-        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
     }
-    
+
     .risk-high {
-        background: linear-gradient(135deg, #dc3545, #e83e8c);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
     }
-    
+
     .confidence-bar {
         height: 20px;
         border-radius: 10px;
-        background: #e9ecef;
+        background: rgba(255, 255, 255, 0.2);
         overflow: hidden;
         margin: 1rem 0;
     }
-    
+
     .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, #28a745, #20c997);
+        background: rgba(255, 255, 255, 0.8);
         transition: width 0.5s ease;
     }
-    
+
+    /* Professional Chart Container - Matching Home Page Cards */
     .chart-container {
-        background: white;
-        border-radius: 15px;
+        background: #ffffff;
+        border-radius: 12px;
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         margin: 2rem 0;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .chart-container:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    /* Professional Cards - Matching Home Page */
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    /* Professional Section Styling - Matching Home Page */
+    .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.75rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: #3b82f6;
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+    }
+
+    /* Professional Buttons - Matching Home Page */
+    .btn-custom {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background: #3b82f6;
+        border: none;
+        color: white;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        background: #2563eb;
+    }
+
+    /* Professional Progress Bars */
+    .progress {
+        height: 12px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+        transition: width 0.6s ease;
+    }
+
+    /* Professional Alert Styling */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .result-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .risk-card {
+            padding: 1.5rem;
+        }
     }
 </style>
 
@@ -116,7 +283,7 @@
 </section>
 
 <!-- Risk Level Chart -->
-<section class="py-5 bg-light">
+<section class="py-5" style="background-color: #f8fafc;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -198,7 +365,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <div class="card h-100 border-0 shadow">
+                <div class="card h-100">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-3">
                             <i class="fas fa-lightbulb text-warning me-2"></i>Recommendations
@@ -250,7 +417,7 @@
             </div>
             
             <div class="col-lg-6 mb-4">
-                <div class="card h-100 border-0 shadow">
+                <div class="card h-100">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-3">
                             <i class="fas fa-info-circle text-info me-2"></i>Important Note
@@ -277,22 +444,25 @@
 </section>
 
 <!-- Action Buttons -->
-<section class="py-5 bg-light">
+<section class="py-5" style="background-color: #f8fafc;">
     <div class="container text-center">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <h4 class="fw-bold mb-4">What would you like to do next?</h4>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{% url 'add_review' prediction.id %}" class="btn btn-primary btn-lg">
+                    <a href="{% url 'start_new_conversation' prediction.id %}" class="btn btn-success btn-lg shadow">
+                        <i class="fas fa-robot me-2"></i>Chat with AI Assistant
+                    </a>
+                    <a href="{% url 'add_review' prediction.id %}" class="btn btn-primary btn-lg shadow">
                         <i class="fas fa-star me-2"></i>Leave a Review
                     </a>
-                    <a href="{% url 'user_predictions' %}" class="btn btn-outline-primary btn-lg">
+                    <a href="{% url 'user_predictions' %}" class="btn btn-outline-primary btn-lg shadow">
                         <i class="fas fa-history me-2"></i>View All Reports
                     </a>
-                    <a href="{% url 'disease_detail' disease_name %}" class="btn btn-outline-secondary btn-lg">
+                    <a href="{% url 'disease_detail' disease_name %}" class="btn btn-outline-secondary btn-lg shadow">
                         <i class="fas fa-arrow-left me-2"></i>Back to {{ prediction.disease.name }}
                     </a>
-                    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+                    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg shadow">
                         <i class="fas fa-home me-2"></i>Explore Other Tests
                     </a>
                 </div>

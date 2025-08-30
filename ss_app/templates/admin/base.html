@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - SymptoScan{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #2c3e50;
+            --admin-secondary: #34495e;
+            --admin-accent: #3498db;
+            --admin-success: #27ae60;
+            --admin-warning: #f39c12;
+            --admin-danger: #e74c3c;
+            --admin-info: #17a2b8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .admin-sidebar {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-content {
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .admin-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-nav {
+            padding: 2rem 0;
+        }
+        
+        .admin-nav-item {
+            padding: 1rem 1.5rem;
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            margin: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .admin-nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: var(--admin-accent);
+            text-decoration: none;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .admin-nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left-color: var(--admin-accent);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .admin-nav-item i {
+            width: 25px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .stats-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stats-users { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .stats-predictions { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .stats-diseases { background: linear-gradient(135deg, #27ae60, #229954); }
+        .stats-reviews { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .stats-chat { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .stats-conversations { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        
+        .admin-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-table th {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-table td {
+            padding: 1.2rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .admin-table tbody tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .btn-admin {
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-admin:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .admin-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-form .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-form .form-control:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 0.3rem rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .breadcrumb-admin {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-admin .breadcrumb-item a {
+            color: var(--admin-accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .breadcrumb-admin .breadcrumb-item.active {
+            color: var(--admin-secondary);
+            font-weight: 600;
+        }
+        
+        /* Enhanced animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--admin-accent);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-secondary);
+        }
+        
+        /* Badge enhancements */
+        .badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Progress bars */
+        .progress {
+            height: 12px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+        
+        /* Card enhancements */
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Alert enhancements */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+        }
+        
+        /* Pagination enhancements */
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 2px;
+            border: none;
+            color: var(--admin-accent);
+            font-weight: 500;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: var(--admin-accent);
+            border-color: var(--admin-accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Sidebar -->
+    <div class="admin-sidebar">
+        <div class="text-center py-4">
+            <h4 class="text-white mb-0">
+                <i class="fas fa-shield-alt me-2"></i>
+                SymptoScan Admin
+            </h4>
+            <small class="text-white-50">Administrative Panel</small>
+        </div>
+        
+        <nav class="admin-nav">
+            <a href="{% url 'admin_dashboard' %}" class="admin-nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="{% url 'admin_users' %}" class="admin-nav-item {% if 'admin_users' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fas fa-users"></i>
+                User Management
+            </a>
+            <a href="{% url 'admin_reviews' %}" class="admin-nav-item {% if 'admin_reviews' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fas fa-star"></i>
+                Review Moderation
+            </a>
+            <a href="{% url 'admin_chat_logs' %}" class="admin-nav-item {% if 'admin_chat_logs' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fas fa-comments"></i>
+                AI Chat Logs
+            </a>
+            <hr class="text-white-50 mx-3">
+            <a href="{% url 'logoutaccount' %}" class="admin-nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </nav>
+    </div>
+    
+ <!-- Admin Content -->
+    <div class="admin-content">
+        <!-- Header -->
+        <div class="admin-header fade-in-up">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0 fw-bold">{% block page_title %}Admin Dashboard{% endblock %}</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-admin mb-0">
+                            <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                            {% block breadcrumb %}{% endblock %}
+                        </ol>
+                    </nav>
+                </div>
+                <div class="text-end">
+                    <small class="text-muted">Welcome, {{ user.username }}</small>
+                    <div class="mt-1">
+                        <span class="badge bg-success">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-4 fade-in-up">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Main Content -->
+        <div class="fade-in-up">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

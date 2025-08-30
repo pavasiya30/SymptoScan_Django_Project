@@ -1,0 +1,82 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Disease Management - SymptoScan Admin{% endblock %}
+{% block page_title %}Disease Management{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Diseases</li>
+{% endblock %}
+
+{% block content %}
+<!-- Diseases List -->
+<div class="admin-table">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Disease</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for disease in diseases %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-disease fa-2x text-primary me-3"></i>
+                            <div>
+                                <h6 class="mb-0">{{ disease.name }}</h6>
+                                <small class="text-muted">{{ disease.description|truncatewords:10 }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if disease.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ disease.created_at|date:"M d, Y" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center py-4">
+                        <i class="fas fa-disease fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No diseases found</h5>
+                        <p class="text-muted">Diseases will appear here once they are added to the system</p>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Disease Statistics -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <h4 class="text-primary">{{ diseases.count }}</h4>
+            <p class="text-muted mb-0">Total Diseases</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <h4 class="text-success">{{ active_diseases_count }}</h4>
+            <p class="text-muted mb-0">Active Diseases</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <h4 class="text-info">{{ diseases_with_models_count }}</h4>
+            <p class="text-muted mb-0">With ML Models</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <h4 class="text-warning">{{ total_predictions_count }}</h4>
+            <p class="text-muted mb-0">Total Predictions</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

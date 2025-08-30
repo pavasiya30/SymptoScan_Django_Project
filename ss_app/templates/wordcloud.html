@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .wordcloud-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+    }
+    
+    .wordcloud-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin: 2rem 0;
+    }
+    
+    .stats-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .word-list {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .word-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .word-item:last-child {
+        border-bottom: none;
+    }
+    
+    .word-frequency {
+        background: #007bff;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+</style>
+
+<!-- Word Cloud Hero -->
+<section class="wordcloud-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Review Insights</h1>
+        <p class="lead">Visual representation of user feedback and experiences</p>
+        <p class="mb-0">Generated from {{ total_reviews }} user reviews</p>
+    </div>
+</section>
+
+<!-- Word Cloud Visualization -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="wordcloud-container">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold mb-3">User Review Word Cloud</h3>
+                        <p class="text-muted">Most frequently mentioned words in user reviews</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <img src="data:image/png;base64,{{ wordcloud_image }}" 
+                             alt="Review Word Cloud" 
+                             class="img-fluid rounded shadow"
+                             style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <i class="fas fa-comments fa-3x text-primary mb-3"></i>
+                    <h4 class="fw-bold">{{ total_reviews }}</h4>
+                    <p class="mb-0">Total Reviews</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <i class="fas fa-font fa-3x text-success mb-3"></i>
+                    <h4 class="fw-bold">{{ total_words }}</h4>
+                    <p class="mb-0">Total Words</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stats-card">
+                    <i class="fas fa-tags fa-3x text-warning mb-3"></i>
+                    <h4 class="fw-bold">{{ unique_words }}</h4>
+                    <p class="mb-0">Unique Words</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Words List -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="word-list">
+                    <h4 class="fw-bold mb-4 text-center">Top 10 Most Frequent Words</h4>
+                    {% for word, frequency in top_words.items %}
+                    <div class="word-item">
+                        <span class="fw-bold">{{ word|title }}</span>
+                        <span class="word-frequency">{{ frequency }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Information Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center">
+                    <h4 class="fw-bold mb-3">About This Word Cloud</h4>
+                    <p class="lead mb-4">
+                        This word cloud is generated from user reviews and feedback about their prediction experiences. 
+                        The size of each word represents how frequently it appears in user comments.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-line fa-2x text-primary mb-2"></i>
+                                    <h6 class="fw-bold">Sentiment Analysis</h6>
+                                    <p class="small text-muted mb-0">Words reflect user satisfaction and experience quality</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-users fa-2x text-success mb-2"></i>
+                                    <h6 class="fw-bold">Community Insights</h6>
+                                    <p class="small text-muted mb-0">Collective feedback from our user community</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container text-center">
+        <h4 class="fw-bold mb-3">Want to Contribute?</h4>
+        <p class="lead mb-4">Share your experience and help improve our word cloud!</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-home me-2"></i>Explore Diseases
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'user_predictions' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-history me-2"></i>My Predictions
+            </a>
+            {% else %}
+            <a href="{% url 'signupaccount' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

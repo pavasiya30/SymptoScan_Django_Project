@@ -13,11 +13,24 @@ def signupaccount(request):
     else:
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully!')
-            return redirect('home')
+            try:
+                user = form.save()
+                login(request, user)
+                messages.success(request, 'Account created successfully!')
+                
+                # If user is testadmin, redirect to admin dashboard
+                if user.username == 'testadmin':
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('home')
+            except Exception as e:
+                messages.error(request, f'Error creating account: {str(e)}')
+                return render(request, 'signupaccount.html', {'form': form})
         else:
+            # Display form errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
             return render(request, 'signupaccount.html', {'form': form})
 
 def loginaccount(request):
@@ -32,7 +45,12 @@ def loginaccount(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                return redirect('home')
+                
+                # If user is testadmin, redirect to admin dashboard
+                if username == 'testadmin':
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('home')
         else:
             messages.error(request, 'Invalid username or password.')
         return render(request, 'loginaccount.html', {'form': form})

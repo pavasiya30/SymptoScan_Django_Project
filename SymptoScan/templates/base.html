@@ -117,10 +117,17 @@
                                 <li><a class="dropdown-item" href="{% url 'disease_detail' 'hypertension' %}">Hypertension</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'disease_detail' 'asthma' %}">Asthma Info</a></li>
-                                <li><a class="dropdown-item" href="{% url 'disease_detail' 'cancer' %}">Cancer Awareness</a></li>
+                                <li><a class="dropdown-item" href="{% url 'disease_detail' 'kidney_disease' %}">Kidney Risk</a></li>
                                 <li><a class="dropdown-item" href="{% url 'disease_detail' 'stroke' %}">Stroke Prevention</a></li>
                             </ul>
                         </li>
+                        {% if user.username == 'testadmin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                                <i class="fas fa-shield-alt me-1"></i>Admin Dashboard
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                     
                     <ul class="navbar-nav">
